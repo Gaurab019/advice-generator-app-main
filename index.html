@@ -39,14 +39,23 @@
     </section>
     <script type="text/javascript">
       async function getApiData() {
-        const response = await fetch("https://api.adviceslip.com/advice");
-        const data = await response.json();
-
-        // update dom element to get the advice no to the advice section
-        document.querySelector(".adviceno").innerHTML = data.slip.id;
-        // update dom element to get the advice text to the advice section
-        document.querySelector(".subText").innerHTML =
-          '" ' + data.slip.advice + ' "';
+        try {
+          const response = await fetch("https://api.adviceslip.com/advice", {
+            cache: "no-cache",
+          });
+          const data = await response.json();
+          if (response.ok) {
+            // update dom element to get the advice no to the advice section
+            document.querySelector(".adviceno").innerHTML = data.slip.id;
+            // update dom element to get the advice text to the advice section
+            document.querySelector(".subText").innerHTML =
+              '" ' + data.slip.advice + ' "';
+          } else {
+            throw response;
+          }
+        } catch (error) {
+          document.querySelector("body").innerHTML = error.message;
+        }
       }
 
       document.querySelector(".bttn").addEventListener("click", getApiData);
